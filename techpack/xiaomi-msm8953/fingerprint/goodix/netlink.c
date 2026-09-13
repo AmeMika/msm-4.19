@@ -11,9 +11,7 @@
 int stringlength(char *s);
 void sendnlmsg(char *message);
 static int pid;
-static int err;
-static struct sock *nl_sk = NULL;
-static int flag = 0;
+struct sock *mido_nl_sk = NULL;
 
 struct gf_uk_channel {
 	int channel_id;
@@ -28,7 +26,7 @@ void sendnlmsg(char *message)
 	struct nlmsghdr *nlh;
 	int len = NLMSG_SPACE(MAX_MSGSIZE);
 	int slen = 0;
-	if (!message || !nl_sk)
+	if (!message || !mido_nl_sk)
 		return ;
 	skb_1 = alloc_skb(len, GFP_KERNEL);
 	if (!skb_1)
@@ -42,10 +40,10 @@ void sendnlmsg(char *message)
 	message[slen] = '\0';
 	memcpy(NLMSG_DATA(nlh), message, slen+1);
 
-	netlink_unicast(nl_sk, skb_1, pid, MSG_DONTWAIT);
+	netlink_unicast(mido_nl_sk, skb_1, pid, MSG_DONTWAIT);
 }
 
-static void nl_data_ready(struct sk_buff *__skb)
+void mido_nl_data_ready(struct sk_buff *__skb)
 {
 	struct sk_buff *skb;
 	struct nlmsghdr *nlh;
@@ -64,12 +62,12 @@ int netlink_init(void)
 	struct netlink_kernel_cfg netlink_cfg;
 	netlink_cfg.groups = 0;
 	netlink_cfg.flags = 0;
-	netlink_cfg.input = nl_data_ready;
+	netlink_cfg.input = mido_nl_data_ready;
 	netlink_cfg.cb_mutex = NULL;
 
-	nl_sk = netlink_kernel_create(&init_net, NETLINK_TEST, &netlink_cfg);
+	mido_nl_sk = netlink_kernel_create(&init_net, NETLINK_TEST, &netlink_cfg);
 
-	if (!nl_sk) {
+	if (!mido_nl_sk) {
 	printk(KERN_ERR "my_net_link: create netlink socket error.\n");
 	return 1;
 	}
@@ -79,8 +77,8 @@ int netlink_init(void)
 
 void netlink_exit(void)
 {
-	if (nl_sk != NULL) {
-		sock_release(nl_sk->sk_socket);
+	if (mido_nl_sk != NULL) {
+		sock_release(mido_nl_sk->sk_socket);
 	}
 
 	printk("my_net_link: self module exited\n");
