@@ -62,7 +62,7 @@
 #define WAKELOCK_HOLD_TIME 2000 /* in ms */
 #define FP_UNLOCK_REJECTION_TIMEOUT (WAKELOCK_HOLD_TIME - 500)
 
-#define GF_SPIDEV_NAME     "goodix,fingerprint-ysl"
+#define GF_SPIDEV_NAME     "goodix,fingerprint"
 /*device name after register in charater*/
 #define GF_DEV_NAME            "goodix_fp"
 #define	GF_INPUT_NAME	    "gf3208"
@@ -349,7 +349,7 @@ static irqreturn_t gf_irq(int irq, void *handle)
 	struct gf_dev *gf_dev = &gf;
 	char msg = GF_NET_EVENT_IRQ;
 	__pm_wakeup_event(fp_wakelock, WAKELOCK_HOLD_TIME);
-	ysl_sendnlmsg(&msg);
+	sendnlmsg(&msg);
 	if (gf_dev->device_available == 1) {
 		gf_dev->wait_finger_down = false;
 		// schedule_work(&gf_dev->work);
@@ -368,7 +368,7 @@ static int irq_setup(struct gf_dev *gf_dev)
 {
 	int status;
 
-	gf_dev->irq = ysl_gf_irq_num(gf_dev);
+	gf_dev->irq = gf_irq_num(gf_dev);
 	status = request_threaded_irq(gf_dev->irq, NULL, gf_irq,
 			IRQF_TRIGGER_RISING | IRQF_ONESHOT,
 			"gf", gf_dev);
@@ -469,7 +469,7 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 	case GF_IOC_RESET:
 		pr_debug("%s GF_IOC_RESET\n", __func__);
-		ysl_gf_hw_reset(gf_dev, 3);
+		gf_hw_reset(gf_dev, 3);
 		break;
 
 	case GF_IOC_INPUT_KEY_EVENT:
@@ -515,12 +515,12 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 	case GF_IOC_ENABLE_POWER:
 		pr_debug("%s GF_IOC_ENABLE_POWER\n", __func__);
-		ysl_gf_power_on(gf_dev);
+		gf_power_on(gf_dev);
 		break;
 
 	case GF_IOC_DISABLE_POWER:
 		pr_debug("%s GF_IOC_DISABLE_POWER\n", __func__);
-		ysl_gf_power_off(gf_dev);
+		gf_power_off(gf_dev);
 		break;
 
 	case GF_IOC_ENTER_SLEEP_MODE:
@@ -584,7 +584,7 @@ static int gf_open(struct inode *inode, struct file *filp)
 			pr_info("Succeed to open device. irq = %d\n",
 					gf_dev->irq);
 			if (gf_dev->users == 1) {
-				status = ysl_gf_parse_dts(gf_dev);
+				status = gf_parse_dts(gf_dev);
 				if (status)
 					goto err_parse_dt;
 				status = irq_setup(gf_dev);
@@ -592,11 +592,11 @@ static int gf_open(struct inode *inode, struct file *filp)
 					goto err_irq;
 			}
 			printk("goodixfp power on begin\n");
-			ysl_gf_power_on(gf_dev);
+			gf_power_on(gf_dev);
 			printk("goodixfp msleep begin\n");
 			msleep(10);
 			printk("goodixfp msleep end\n");
-			ysl_gf_hw_reset(gf_dev, 60);
+			gf_hw_reset(gf_dev, 60);
 			gf_dev->device_available = 1;
 		}
 	} else {
@@ -606,7 +606,7 @@ static int gf_open(struct inode *inode, struct file *filp)
 
 	return status;
 err_irq:
-	ysl_gf_cleanup(gf_dev);
+	gf_cleanup(gf_dev);
 err_parse_dt:
 	return status;
 }
@@ -649,11 +649,11 @@ static int gf_release(struct inode *inode, struct file *filp)
 	gf_dev->users--;
 	if (!gf_dev->users) {
 		irq_cleanup(gf_dev);
-		ysl_gf_cleanup(gf_dev);
+		gf_cleanup(gf_dev);
 
 		/*power off the sensor*/
 		gf_dev->device_available = 0;
-		ysl_gf_power_off(gf_dev);
+		gf_power_off(gf_dev);
 	}
 	mutex_unlock(&device_list_lock);
 	return status;
@@ -705,7 +705,7 @@ static const struct file_operations proc_file_ops = {
 				gf_dev->wait_finger_down = true;
 #if defined(GF_NETLINK_ENABLE)
 				msg = GF_NET_EVENT_FB_BLACK;
-				ysl_sendnlmsg(&msg);
+				sendnlmsg(&msg);
 #elif defined(GF_FASYNC)
 				if (gf_dev->async)
 					kill_fasync(&gf_dev->async, SIGIO, POLL_IN);
@@ -717,7 +717,7 @@ static const struct file_operations proc_file_ops = {
 				gf_dev->fb_black = 0;
 #if defined(GF_NETLINK_ENABLE)
 				msg = GF_NET_EVENT_FB_UNBLACK;
-				ysl_sendnlmsg(&msg);
+				sendnlmsg(&msg);
 #elif defined(GF_FASYNC)
 				if (gf_dev->async)
 					kill_fasync(&gf_dev->async, SIGIO, POLL_IN);
@@ -898,7 +898,7 @@ static struct spi_driver gf_driver = {
 static struct platform_driver gf_driver = {
 #endif
 	.driver = {
-		.name = GF_DEV_NAME "-ysl",
+		.name = GF_DEV_NAME,
 		.owner = THIS_MODULE,
 		.of_match_table = gx_match_table,
 	},
@@ -906,9 +906,7 @@ static struct platform_driver gf_driver = {
 	.remove = gf_remove,
 };
 
-static bool gf_init_finished = false;
-
-int xiaomi_msm8953_fingerprint_goodix_ysl_init(void)
+static int __init gf_init(void)
 {
 	int status;
 
@@ -946,18 +944,17 @@ int xiaomi_msm8953_fingerprint_goodix_ysl_init(void)
 	}
 
 #ifdef GF_NETLINK_ENABLE
-	ysl_netlink_init();
+	netlink_init();
 #endif
 	pr_info("status = 0x%x\n", status);
 	return 0;
 }
+module_init(gf_init);
 
 static void __exit gf_exit(void)
 {
-	if (!gf_init_finished)
-		return;
 #ifdef GF_NETLINK_ENABLE
-	ysl_netlink_exit();
+	netlink_exit();
 #endif
 #if defined(USE_PLATFORM_BUS)
 	platform_driver_unregister(&gf_driver);
@@ -971,5 +968,5 @@ module_exit(gf_exit);
 
 MODULE_AUTHOR("Jiangtao Yi, <yijiangtao@goodix.com>");
 MODULE_AUTHOR("Jandy Gou, <gouqingsong@goodix.com>");
-MODULE_DESCRIPTION("goodix fingerprint ysl sensor device driver");
+MODULE_DESCRIPTION("goodix fingerprint sensor device driver");
 MODULE_LICENSE("GPL");
