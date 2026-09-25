@@ -39,7 +39,7 @@
 		clock-names = "camss_top_ahb_clk", "ispif_ahb_clk",
 			"csiphy_timer_src_clk", "csiphy_timer_clk",
 			"camss_ahb_src", "camss_ahb_clk";
-		qcom,clock-rates = <0 61540000 200000000 0 0 0>;
+		qcom,clock-rates = <0 61540000 269333333 0 0 0>;
 	};
 
 	qcom,csiphy@1b35000 {
@@ -60,7 +60,7 @@
 		clock-names = "camss_top_ahb_clk", "ispif_ahb_clk",
 			"csiphy_timer_src_clk", "csiphy_timer_clk",
 			"camss_ahb_src", "camss_ahb_clk";
-		qcom,clock-rates = <0 61540000 200000000 0 0 0>;
+		qcom,clock-rates = <0 61540000 269333333 0 0 0>;
 	};
 
 	qcom,csiphy@1b36000 {
@@ -81,7 +81,7 @@
 		clock-names = "camss_top_ahb_clk", "ispif_ahb_clk",
 			"csiphy_timer_src_clk", "csiphy_timer_clk",
 			"camss_ahb_src", "camss_ahb_clk";
-		qcom,clock-rates = <0 61540000 200000000 0 0 0>;
+		qcom,clock-rates = <0 61540000 269333333 0 0 0>;
 	};
 
 	qcom,csid@1b30000  {
@@ -108,7 +108,7 @@
 			"csi0_phy_clk",
 			"csi_clk",  "csi_pix_clk",
 			"csi_rdi_clk", "camss_ahb_clk";
-		qcom,clock-rates = <0 61540000 0 200000000 0 0 0 0 0>;
+		qcom,clock-rates = <0 61540000 0 540000000 0 0 0 0 0>;
 	};
 
 	qcom,csid@1b30400 {
@@ -135,7 +135,7 @@
 			"csi1_phy_clk",
 			"csi_clk", "csi_pix_clk",
 			"csi_rdi_clk", "camss_ahb_clk";
-		qcom,clock-rates = <0 61540000 0 200000000 0 0 0 0 0>;
+		qcom,clock-rates = <0 61540000 0 540000000 0 0 0 0 0>;
 	};
 
 	qcom,csid@1b30800 {
@@ -162,7 +162,7 @@
 			"csi2_phy_clk",
 			"csi_clk", "csi_pix_clk",
 			"csi_rdi_clk", "camss_ahb_clk";
-		qcom,clock-rates = <0 61540000 0 200000000 0 0 0 0 0>;
+		qcom,clock-rates = <0 61540000 0 540000000 0 0 0 0 0>;
 	};
 
 	qcom,ispif@1b31000 {
@@ -396,7 +396,7 @@
 		qcom,msm-bus,num-cases = <2>;
 		qcom,msm-bus,num-paths = <1>;
 		qcom,msm-bus,vectors-KBps = <62 512 0 0>,
-			<62 512 800000 800000>;
+			<62 512 800000 800000>; 
 	};
 
 	qcom,cpp@1b04000 {

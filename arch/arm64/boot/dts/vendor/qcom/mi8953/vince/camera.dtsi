@@ -1,13 +1,13 @@
 /* msm8953-camera-sensor-qrd */
 
 &vfe0 {
-	max-clk-nominal = <540000000>;
-	max-clk-turbo = <540000000>;
+	max-clk-nominal = <576000000>;
+	max-clk-turbo = <576000000>;
 };
 
 &vfe1 {
-	max-clk-nominal = <540000000>;
-	max-clk-turbo = <540000000>;
+	max-clk-nominal = <576000000>;
+	max-clk-turbo = <576000000>;
 };
 
 &soc {
