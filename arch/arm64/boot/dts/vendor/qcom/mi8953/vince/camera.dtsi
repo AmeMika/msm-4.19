@@ -206,12 +206,14 @@
                 qcom,mem9 = <0 0x0 2 0 1 0>;
 
                 cam_vdig-supply = <&pm8953_l23>;
-                cam_vana-supply = <&pm8953_l22>;
-                cam_vio-supply = <&pm8953_l6>;
-                qcom,cam-vreg-name = "cam_vdig", "cam_vio", "cam_vana";
-                qcom,cam-vreg-min-voltage = <1200000 0 2800000>;
-                qcom,cam-vreg-max-voltage = <1200000 0 2800000>;
-                qcom,cam-vreg-op-mode = <105000 0 80000>;
+		cam_vio-supply = <&pm8953_l6>;
+		cam_vana-supply = <&pm8953_l22>;
+		cam_vaf-supply = <&pm8953_l17>;
+		qcom,cam-vreg-name = "cam_vdig", "cam_vio", "cam_vana",
+					"cam_vaf";
+		qcom,cam-vreg-min-voltage = <1200000 0 2800000 2850000>;
+		qcom,cam-vreg-max-voltage = <1200000 0 2800000 2850000>;
+		qcom,cam-vreg-op-mode = <105000 0 80000 100000>;
                 qcom,gpio-no-mux = <0>;
                 pinctrl-names = "cam_default", "cam_suspend";
                 pinctrl-0 = <&cam_sensor_mclk1_default
@@ -227,7 +229,9 @@
                 qcom,cam-power-seq-type = "sensor_gpio", "sensor_vreg",
                         "sensor_vreg", "sensor_vreg", "sensor_clk" , "sensor_gpio";
                 qcom,cam-power-seq-val = "sensor_gpio_reset", "cam_vana",
-                        "cam_vdig",     "cam_vio", "sensor_cam_mclk", "sensor_gpio_reset";
+			"cam_vdig",	
+			"cam_vio",
+			"cam_vaf", "sensor_cam_mclk", "sensor_gpio_reset";
                 qcom,cam-power-seq-cfg-val = <0 1 1 1 24000000 1>;
                 qcom,cam-power-seq-delay = <1 0 0 0 10 1>;
 
@@ -291,12 +295,14 @@
                 qcom,mem9 = <0 0x0 2 0 1 0>;
 
                 cam_vdig-supply = <&pm8953_l23>;
-                cam_vana-supply = <&pm8953_l22>;
-                cam_vio-supply = <&pm8953_l6>;
-                qcom,cam-vreg-name = "cam_vdig", "cam_vio", "cam_vana";
-                qcom,cam-vreg-min-voltage = <1200000 0 2800000>;
-                qcom,cam-vreg-max-voltage = <1200000 0 2800000>;
-                qcom,cam-vreg-op-mode = <105000 0 80000>;
+		cam_vio-supply = <&pm8953_l6>;
+		cam_vana-supply = <&pm8953_l22>;
+		cam_vaf-supply = <&pm8953_l17>;
+		qcom,cam-vreg-name = "cam_vdig", "cam_vio", "cam_vana",
+					"cam_vaf";
+		qcom,cam-vreg-min-voltage = <1200000 0 2800000 2850000>;
+		qcom,cam-vreg-max-voltage = <1200000 0 2800000 2850000>;
+		qcom,cam-vreg-op-mode = <105000 0 80000 100000>;
                 qcom,gpio-no-mux = <0>;
                 pinctrl-names = "cam_default", "cam_suspend";
                 pinctrl-0 = <&cam_sensor_mclk1_default
@@ -312,7 +318,9 @@
                 qcom,cam-power-seq-type = "sensor_gpio", "sensor_vreg",
                         "sensor_vreg", "sensor_vreg", "sensor_clk" , "sensor_gpio";
                 qcom,cam-power-seq-val = "sensor_gpio_reset", "cam_vana",
-                        "cam_vdig",     "cam_vio", "sensor_cam_mclk", "sensor_gpio_reset";
+			"cam_vdig",	
+			"cam_vio",
+			"cam_vaf", "sensor_cam_mclk", "sensor_gpio_reset";
                 qcom,cam-power-seq-cfg-val = <0 1 1 1 24000000 1>;
                 qcom,cam-power-seq-delay = <1 0 0 0 10 1>;
 
@@ -379,12 +387,14 @@
                 qcom,led-flash-src = <&led_flash2>;
                 qcom,eeprom-src = <&eeprom3 &eeprom4>;
                 cam_vdig-supply = <&pm8953_l23>;
-                cam_vana-supply = <&pm8953_l22>;
-                cam_vio-supply = <&pm8953_l6>;
-                qcom,cam-vreg-name = "cam_vdig", "cam_vio", "cam_vana";
-                qcom,cam-vreg-min-voltage = <1200000 0 2800000>;
-                qcom,cam-vreg-max-voltage = <1200000 0 2800000>;
-                qcom,cam-vreg-op-mode = <105000 0 80000>;
+		cam_vio-supply = <&pm8953_l6>;
+		cam_vana-supply = <&pm8953_l22>;
+		cam_vaf-supply = <&pm8953_l17>;
+		qcom,cam-vreg-name = "cam_vdig", "cam_vio", "cam_vana",
+					"cam_vaf";
+		qcom,cam-vreg-min-voltage = <1200000 0 2800000 2850000>;
+		qcom,cam-vreg-max-voltage = <1200000 0 2800000 2850000>;
+		qcom,cam-vreg-op-mode = <105000 0 80000 100000>;
                 qcom,gpio-no-mux = <0>;
                 pinctrl-names = "cam_default", "cam_suspend";
                 pinctrl-0 = <&cam_sensor_mclk1_default
